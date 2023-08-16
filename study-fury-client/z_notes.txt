@@ -1,0 +1,29 @@
+Home page process:
+    1- run these commands on the terminal: npm install bootstrap npm install @popperjs/core
+    2- import these in main.js:
+        import "bootstrap/dist/css/bootstrap.css"
+        import "bootstrap/dist/js/bootstrap.js"
+    3- clear the helloWorld component and copy-paste it in the components folder, because we will need 
+    to add componnets in the future and the cleared component will be our template. Here is the 
+    cleared helloWorld Component:
+      <template>
+        <div class="hello">
+          
+        </div>
+      </template>
+
+      <script>
+      export default {
+        name: 'HelloWorld'
+      }
+      </script>
+
+      <style scoped>
+
+      </style>
+    4- Navbar setup.
+      Change the helloWorld.vue to Navbar.vue, then go to bootstrap 5 and copy it into the template. Changed the theme to dark.
+      Then update app.vue and add your HomeNavbar component.
+    5- Jumbotron setup
+    6- CTA setup
+    7- Cards Setup

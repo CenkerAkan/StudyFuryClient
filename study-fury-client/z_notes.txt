@@ -29,3 +29,96 @@ Home page process:
     7- Cards Setup
 
 // Router Setup
+//
+
+chatgpt dialog about how to store access token: 
+Sunucudan dönen `access_token`'ı Vue tarafında nasıl kullanacağınızı ve saklayacağınızı anlatalım:
+
+1. **Access Token'ı Alma ve Saklama:**
+
+   Sunucu, `res.json({ access_token: accessToken })` ile access token'ı döndürdüğünde, bu token'ı Vue bileşenlerinde saklamak için genellikle VueX veya Local Storage gibi mekanizmalar kullanılır.
+
+   VueX kullanarak saklamak isterseniz:
+
+   - Öncelikle VueX store'u oluşturun ve içerisine bir state (durum) alanı ekleyin:
+     
+     ```javascript
+     // store.js
+     import { createStore } from 'vuex';
+
+     const store = createStore({
+       state: {
+         accessToken: null
+       }
+     });
+
+     export default store;
+     ```
+
+   - Access token'ı VueX store içindeki state'e kaydedebilirsiniz:
+
+     ```javascript
+     // login.vue
+     methods: {
+       async login() {
+         try {
+           const response = await this.$axios.post('/login', {
+             email: this.email,
+             password: this.password
+           });
+           this.$store.commit('setAccessToken', response.data.access_token);
+         } catch (error) {
+           console.error(error);
+         }
+       }
+     }
+     ```
+
+2. **Access Token'ı Kullanma:**
+
+   Access token'ı Vue bileşenlerinde kullanmak için store içindeki state'e erişebilirsiniz:
+
+   ```javascript
+   // Herhangi bir Vue bileşeni
+   this.$store.state.accessToken;
+   ```
+
+3. **Local Storage Kullanma:**
+
+   Alternatif olarak, access token'ı Local Storage içinde saklayabilirsiniz:
+
+   ```javascript
+   // login.vue
+   methods: {
+     async login() {
+       try {
+         const response = await this.$axios.post('/login', {
+           email: this.email,
+           password: this.password
+         });
+         localStorage.setItem('access_token', response.data.access_token);
+       } catch (error) {
+         console.error(error);
+       }
+     }
+   }
+   ```
+
+   Access token'ı kullanırken de Local Storage'dan çekebilirsiniz:
+
+   ```javascript
+   // Herhangi bir Vue bileşeni
+   const accessToken = localStorage.getItem('access_token');
+   ```
+
+Access token'ı sakladıktan sonra, gerektiğinde HTTP istekleri yaparken Authorization başlığında bu token'ı kullanabilirsiniz. Örneğin Axios kullanıyorsanız:
+
+```javascript
+this.$axios.get('/api/some-endpoint', {
+  headers: {
+    Authorization: `Bearer ${accessToken}`
+  }
+});
+```
+
+Unutmayın ki, access token'ı güvenli bir şekilde saklamanız önemlidir. Eğer token kullanımı sırasında ek güvenlik önlemleri almak isterseniz, örneğin token'ın süresini kontrol etmek, oturumun sona ermesini takip etmek ve güncellemek vb., bu gibi işlemleri dikkatlice ele almalısınız.

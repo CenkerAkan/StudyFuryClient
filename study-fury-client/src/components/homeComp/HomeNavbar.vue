@@ -7,15 +7,21 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Login</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Signup</a>
-          </li>
+          <router-link to="/">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page">Home</a>
+            </li>
+          </router-link>
+          <router-link to="/login">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page">Login</a>
+            </li>
+          </router-link>
+          <router-link to="/signup">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page">Signup</a>
+            </li>
+          </router-link>
         </ul>
       </div>
     </div>

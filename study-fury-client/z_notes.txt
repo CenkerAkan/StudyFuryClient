@@ -27,3 +27,5 @@ Home page process:
     5- Jumbotron setup
     6- CTA setup
     7- Cards Setup
+
+// Router Setup

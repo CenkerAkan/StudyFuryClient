@@ -1,27 +1,15 @@
 <template>
-  <HomeNavbar/>
-  <Jumbotron/>
-  <CTA/>
-  <Cards/>
-  <Footer/>
+
+  <router-view></router-view>
+
 </template>
 
 <script>
-import HomeNavbar from './components/homeComp/HomeNavbar.vue'
-import Jumbotron from './components/homeComp/Jumbotron.vue'
-import CTA from './components/homeComp/CTA.vue'
-import Cards from './components/homeComp/Cards.vue'
-import Footer from './components/homeComp/Footer.vue'
+
 
 export default {
   name: 'App',
-  components: {
-    HomeNavbar,
-    Jumbotron,
-    CTA,
-    Cards,
-    Footer
-  }
+
 }
 </script>
 

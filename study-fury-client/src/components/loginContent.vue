@@ -49,7 +49,7 @@
         }
     },
     methods: {
-        submitLoginForm() {
+        async submitLoginForm() {
             if (!this.password || !this.email) {
                 alert('Please fill the form.');
                 return;
@@ -57,7 +57,7 @@
             console.log(this.email);
             console.log(this.password);
             
-            axios.post(`http://localhost:3500/api/auth/login`,
+            await axios.post(`http://localhost:3500/api/auth/login`,
             {password:this.password,email:this.email}
             ).then((response)=>{
                 localStorage.setItem('access_token', response.data.access_token);

@@ -57,12 +57,12 @@
         },
         computed:{
             isFormInvalid() {
-                return !this.firstName||!this.lastName||!this.username || !this.password || !this.confirmPassword || !this.email;
+                return !this.username || !this.password || !this.confirmPassword || !this.email;
             }
         },
         methods: {
             submitForm() {
-                if (!this.firstName||!this.lastName||!this.username || !this.password || !this.confirmPassword || !this.email) {
+                if (!this.username || !this.password || !this.confirmPassword || !this.email) {
                     alert('Please fill the form.');
                     return;
                 }

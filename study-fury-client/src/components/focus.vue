@@ -1,4 +1,6 @@
 <template>
+    
+    
     <SuiteNavbar/>
     <h1>
         Focus Page!
@@ -7,6 +9,8 @@
 </template>
 
 <script>
+    
+
     import SuiteNavbar from './suiteComp/suiteNavbar.vue';
     import Footer from './homeComp/Footer.vue';
     export default {

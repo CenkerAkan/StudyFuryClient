@@ -21,7 +21,6 @@
                     <h6>{{ date.substring(0,10) }}</h6>
                     <p></p>
                     <p class="card-text">{{ description }}</p>
-                    <h1>{{ commandMessage }}</h1>
                 </div>
                 <div class="card-body" v-if="updatePanelOpen">
                     <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" 
@@ -33,7 +32,6 @@
                     <div class="input-group wide-text">
                         <textarea class="form-control wide" aria-label="With textarea" placeholder="Blog Content" v-model="description"></textarea>
                     </div>
-                    <h1>{{ commandMessage }}</h1>
                     <button 
                         class="btn btn-primary"
                         :disabled="isLoginFormInvalid"
@@ -110,23 +108,36 @@
                 isAdmin:false,
                 currentUserId:'',
                 updateAndDeletePermission:false,
-                commandMessage:'',
                 updatePanelOpen:false,
                 comments:[],
                 comment:{},
                 commentContent:'',
                 commentUDPermission:false,
                 updateCommentPanel:false,
+                token:'',
             }
         },
         created(){
+            console.log("get started again");
+            
+            this.token=localStorage.access_token;
+            console.log("this is the token: "+this.token);
+            localStorage.setItem('access_token',this.token);
             this.getStarted();
         },
         methods:{
             async getStarted(){
+                console.log("get started token: "+localStorage.access_token);
                 const blogIds=this.$route.params.id;
                 try {
-                const response=await axios.post('http://localhost:3500/api/blog/viewBlog',{blog_id:blogIds});
+                const response=await axios.post('http://localhost:3500/api/blog/viewBlog',{blog_id:blogIds},
+                    {
+                        headers: {
+                        Authorization: `Bearer ${this.token}` // Authorization başlığına token'ı ekleyin
+                        }
+                    }
+                );
+                
                 this.userId=response.data.userId;
                 const usersId=this.userId;
                 await this.setUser(usersId);
@@ -143,10 +154,23 @@
                 }
             },
             async setUser(currentuserId){
-                await axios.post('http://localhost:3500/api/auth/getUserById',{userId:currentuserId}).then((response)=>{
+                await axios.post('http://localhost:3500/api/auth/getUserById',{userId:currentuserId},
+                    {
+                        headers: {
+                        Authorization: `Bearer ${this.token}` // Authorization başlığına token'ı ekleyin
+                        }
+                    }
+                    
+                ).then((response)=>{
                     this.username=response.data.username;
                 });
-                await axios.get('http://localhost:3500/api/auth/user').then((response)=>{
+                await axios.get('http://localhost:3500/api/auth/user',
+                    {
+                        headers: {
+                        Authorization: `Bearer ${this.token}` // Authorization başlığına token'ı ekleyin
+                        }
+                    }
+                ).then((response)=>{
                     this.isAdmin=response.data.isAdmin;
                     this.currentUserId=response.data._id;
                 });
@@ -155,33 +179,62 @@
                 this.updateAndDeletePermission=this.isAdmin||(this.userId==this.currentUserId);
             },
             async deletePost(){
-                await axios.post('http://localhost:3500/api/blog/updateBlog',{header:"delete",description:"delete",blogId:this.blogId,deleteFlag:true}).then((response)=>{
+                await axios.post('http://localhost:3500/api/blog/updateBlog',{header:"delete",description:"delete",blogId:this.blogId,deleteFlag:true},
+                    {
+                        headers: {
+                        Authorization: `Bearer ${this.token}` // Authorization başlığına token'ı ekleyin
+                        }
+                    }
+                ).then((response)=>{
                     this.username=response.data.username;
                 });
-                this.commandMessage="Delete Successful"
                 this.$router.push(`/blog`);
             },
             activateUpdatePannel(){
                 this.updatePanelOpen=!this.updatePanelOpen;
             },
-            async updateBlog(){
-                await axios.post('http://localhost:3500/api/blog/updateBlog',{header:this.header,description:this.description,blogId:this.blogId,deleteFlag:false}).then((response)=>{
+            // This functions updates the blog when user hits the save button.
+            async updateBlog(){ 
+                await axios.post('http://localhost:3500/api/blog/updateBlog',{header:this.header,description:this.description,blogId:this.blogId,deleteFlag:false},
+                    {
+                        headers: {
+                        Authorization: `Bearer ${this.token}` // Authorization başlığına token'ı ekleyin
+                        }
+                    }
+
+                ).then((response)=>{
                     this.username=response.data.username;
                 });
-                this.commandMessage="Update Successful"
-                this.$router.push(`/blog`);
+                await this.getStarted();
+                this.updatePanelOpen=!this.updatePanelOpen;
+                //this.$router.push(`/blog`);
             },
             async getComments(){
                 
-                await axios.post('http://localhost:3500/api/comment/listComment',{postId:this.blogId}).then((response)=>{
+                await axios.post('http://localhost:3500/api/comment/listComment',{postId:this.blogId},
+                    {
+                        headers: {
+                        Authorization: `Bearer ${this.token}` // Authorization başlığına token'ı ekleyin
+                        }
+                    }
+                
+                ).then((response)=>{
                     this.comments=response.data;
                     console.log(response)
                 });
                 return;
             },
             async createComment(){
-                await axios.post('http://localhost:3500/api/comment/createComment',{post_id:this.blogId,description:this.commentContent}).then((response)=>{
-                    this.$router.push(`/singleBlog/${this.blogId}`);
+                await axios.post('http://localhost:3500/api/comment/createComment',{post_id:this.blogId,description:this.commentContent},
+                    {
+                        headers: {
+                        Authorization: `Bearer ${this.token}` // Authorization başlığına token'ı ekleyin
+                        }
+                    }
+                ).then((response)=>{
+                    //this.$router.push(`/singleBlog/${this.blogId}`);
+                    this.getStarted();
+                    this.commentContent="";
                 });
                 return;
             },
@@ -189,13 +242,6 @@
                 let userval=await this.getUserFromId(usersId);
                 console.log(userval);
                 this.commentAuthor=userval;
-            },
-            async getUserFromId(usersid){
-                let commentAuthor='def'
-                const response= await axios.post('http://localhost:3500/api/auth/getUserById',{userId:usersid});
-                commentAuthor=response.data.username;
-                console.log(commentAuthor);
-                return commentAuthor;
             },
             activateCommentPannel(){
                 this.updateCommentPanel=!this.updateCommentPanel;
@@ -220,6 +266,7 @@
                 return this.comments.slice().reverse();
             }
         },
+        
     }
 
 </script>

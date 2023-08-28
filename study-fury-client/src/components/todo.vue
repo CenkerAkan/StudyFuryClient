@@ -39,8 +39,7 @@
             SingleTodo
         },
         created(){
-            this.fetchTodoContent();
-            this.showListComp();
+            this.getStarted();
         },
         data(){
             return{
@@ -56,6 +55,10 @@
             }
         },
         methods:{
+            async getStarted(){
+                await this.fetchTodoContent();
+                await this.showListComp();
+            },
             async fetchTodoContent(){
                 try {
                     const accessToken = localStorage.getItem('access_token');

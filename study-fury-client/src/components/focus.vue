@@ -37,10 +37,6 @@
         </div>
     </div>
     
-
-    
-
-
     <Footer/>
 </template>
 

@@ -65,9 +65,11 @@
             },
             async finishTask(){
                 await axios.post('http://localhost:3500/api/task/completeTask',{taskId:this.taskId});
+                this.$parent.getStarted();
             },
             async discardTask(){
                 await axios.post('http://localhost:3500/api/task/discardTask',{taskId:this.taskId});
+                this.$parent.getStarted();
             },
             activateUpdatePanel(){
                 this.updatePanelOpen=!this.updatePanelOpen;

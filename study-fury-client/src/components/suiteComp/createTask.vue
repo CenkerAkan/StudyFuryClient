@@ -56,7 +56,8 @@
                 console.log(this.dateObject);
                 console.log(this.createTaskHeader);
                 await axios.post('http://localhost:3500/api/task/createTask',{header: this.createTaskHeader,deadline:this.dateObject});
-
+                this.createMenuVisible=!this.createMenuVisible;
+                this.$parent.getStarted();
                 return;
             }
         },

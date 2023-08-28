@@ -46,10 +46,12 @@
                 commentUDPermission:false,
                 username:'',
                 authorId:'',
-                description:''
+                description:'',
+                token:'',
             }
         },
         created(){
+            this.token=(localStorage.access_token);
             this.getStartedCapturer();
         },
         methods:{
@@ -59,11 +61,26 @@
             },
             async getStarted(){
                 //this.getUserName();
-                const response= await axios.post('http://localhost:3500/api/auth/getUserById',{userId:this.comment.userId});
+                console.log("2");
+                const response= await axios.post('http://localhost:3500/api/auth/getUserById',{userId:this.comment.userId},
+                    {
+                        headers: {
+                        Authorization: `Bearer ${this.token}` // Authorization başlığına token'ı ekleyin
+                        }
+                    }
+                
+                );
                 this.username=response.data.username;
                 this.authorId=response.data._id;
                 //this.getCurrentUser();
-                const res= await axios.get('http://localhost:3500/api/auth/user');
+                const res= await axios.get('http://localhost:3500/api/auth/user',
+                    {
+                        headers: {
+                        Authorization: `Bearer ${this.token}` // Authorization başlığına token'ı ekleyin
+                        }
+                    }
+                
+                );
                 this.currentUserId=res.data.id;
                 //this.calcCommentPermission();
                 this.commentUDPermission=this.isAdmin||(this.currentUserId==this.authorId);
@@ -78,11 +95,24 @@
                 this.updateCommentPanel=!this.updateCommentPanel;
             },
             async deleteComment(){
-                await axios.post('http://localhost:3500/api/comment/updateComment',{comment_id:this.comment._id,description:this.comment.description,deleteFlag:true});
-                this.$router.push(`/blog`);
+                await axios.post('http://localhost:3500/api/comment/updateComment',{comment_id:this.comment._id,description:this.comment.description,deleteFlag:true},
+                    {
+                        headers: {
+                        Authorization: `Bearer ${localStorage.access_token}` // Authorization başlığına token'ı ekleyin
+                        }
+                    }
+                );
+                this.$parent.getStarted();
             },
             async getUserName(){
-                const response= await axios.post('http://localhost:3500/api/auth/getUserById',{userId:this.comment.userId});
+                console.log("1");
+                const response= await axios.post('http://localhost:3500/api/auth/getUserById',{userId:this.comment.userId},
+                    {
+                        headers: {
+                        Authorization: `Bearer ${localStorage.access_token}` // Authorization başlığına token'ı ekleyin
+                        }
+                    }
+                );
                 this.username=response.data.username;
                 this.authorId=response.data._id;
             },
@@ -91,8 +121,16 @@
                 this.currentUserId=response.data.id;
             },
             async updateComment(){
-                await axios.post('http://localhost:3500/api/comment/updateComment',{comment_id:this.comment._id,description:this.description,deleteFlag:false});
-                this.$router.push(`/blog`);
+                await axios.post('http://localhost:3500/api/comment/updateComment',{comment_id:this.comment._id,description:this.description,deleteFlag:false},
+                    {
+                        headers: {
+                        Authorization: `Bearer ${localStorage.access_token}` // Authorization başlığına token'ı ekleyin
+                        }
+                    }
+                );
+                //this.$router.push(`/blog`);
+                this.updateCommentPanel=false;
+                this.$parent.getStarted();
             }
         },
         

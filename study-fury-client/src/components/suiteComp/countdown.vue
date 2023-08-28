@@ -25,7 +25,9 @@
             Session Complete
         </p>
     </div>
+    
     <CountdownProgress :percentage="this.percentage" v-if="myBool"/>
+    
 </template>
 
 <script>
